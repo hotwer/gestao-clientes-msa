@@ -1,5 +1,6 @@
 <template>
   <div class="container-fluid">
+    <ConfirmationDialog />
     <Clientes />
   </div>
 </template>

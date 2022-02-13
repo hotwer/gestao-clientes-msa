@@ -27,22 +27,6 @@
             </template>
         </b-table>
         <ClienteEditar :model="selectedCliente" @save="salvarCliente()" @close-modal="closeClienteModal()" />
-
-        <b-modal id="confirmation-dialog">
-            {{ dialogMessage }}
-            <template #modal-footer>
-                <div>
-                    <b-row>
-                        <b-col>
-                            <b-button v-on:click="closeDialog(true)" variant="primary">Sim</b-button>
-                        </b-col>
-                        <b-col>
-                            <b-button v-on:click="closeDialog(false)" variant="secondary">Cancelar</b-button>
-                        </b-col>
-                    </b-row>
-                </div>
-            </template>
-        </b-modal>
     </div>
 </template>
 
@@ -50,8 +34,7 @@
 import ClienteEditar from './ClienteEditar.vue'
 import ClienteService from '../services/cliente.service';  
 
-const CLIENTE_EDITAR_MODAL_ID = 'cliente-edit-modal'; 
-const CONFIRMATION_MODAL_ID = 'confirmation-dialog'; 
+const CLIENTE_EDITAR_MODAL_ID = 'cliente-edit-modal';
 
 export default {
     name: "Clientes",
@@ -87,54 +70,12 @@ export default {
             ],
             items: [],
             selectedCliente: { telefones: [] },
-            dialogMessage: "",
         }
     },
     methods: {
-        // api methods
         async loadClientes() {
             this.items = await ClienteService.all();
         },
-        // async loadCliente(id){
-        //     try {
-        //         const response = await this.$http.get(`Clientes/${id}`);
-
-        //         return response.data;
-        //     } catch (e) {
-        //         console.log(e);
-        //     } 
-
-        //     return null;
-        // },
-        // async updateCliente(model) {
-        //     try {
-        //         const isNew = !model.id;
-
-        //         if (isNew) {
-        //             model.id = 0;
-        //         }
-
-        //         return await this.$http.post(
-        //             `Clientes/${model.id}`, 
-        //             model
-        //         );
-        //     } catch (e) {
-        //         console.log(e);
-        //     }
-        // },
-        // async deleteCliente(id) {
-        //     try {
-        //         const response = await this.$http.delete(
-        //             `Clientes/${id}`
-        //         );
-
-        //         return response.data;
-        //     } catch (e) {
-        //         console.log(e);
-        //     }
-
-        //     return null;
-        // },
 
         async editarCliente(id) {
             this.selectedCliente = !id ? 
@@ -164,21 +105,26 @@ export default {
         async excluirCliente(id) {
             const self = this;
 
-            this.openDialog("Você tem certeza que deseja excluir esse registro?", async (confirmation) => {
-                if (!confirmation) return; // skip 
+            this.$root.$emit("dialoger:ask", { 
+                message: "Você tem certeza que deseja excluir esse registro?",
+                callback: async (confirmation) => {
+                    if (!confirmation) return; // skip 
 
-                const data = await ClienteService.delete(id);
+                    const data = await ClienteService.delete(id);
 
-                self.$bvToast.toast(
-                    data.mensagem, 
-                    { 
-                        title: data.status ? "Sucesso!" : "Oops!", 
-                        variant: data.status ? "success" : "danger" 
-                    }
-                );
+                    self.$bvToast.toast(
+                        data.mensagem, 
+                        { 
+                            title: data.status ? "Sucesso!" : "Oops!", 
+                            variant: data.status ? "success" : "danger" 
+                        }
+                    );
 
-                self.loadClientes()
-            }) 
+                    self.loadClientes()
+                }
+            });
+
+            
             
         },
 
@@ -188,17 +134,6 @@ export default {
         },
         closeClienteModal() {
             this.$bvModal.hide(CLIENTE_EDITAR_MODAL_ID);
-        },
-
-        // create global component for this logic
-        openDialog(message, callback) {
-            this.dialogMessage = message;
-            this._dialogCallback = callback;
-            this.$bvModal.show(CONFIRMATION_MODAL_ID);
-        },
-        closeDialog(confirmation) {
-            this._dialogCallback(confirmation);
-            this.$bvModal.hide(CONFIRMATION_MODAL_ID);
         },
 
         // helpers

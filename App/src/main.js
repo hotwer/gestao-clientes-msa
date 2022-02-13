@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
+import ConfirmationDialog from './components/global/ConfirmationDialog.vue'
 import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue';
 import http from './axios.bootstrap';
 import moment from 'moment';
@@ -15,6 +16,10 @@ Vue.prototype.momentjs = moment;
 Vue.use(BootstrapVue);
 Vue.use(BootstrapVueIcons);
 
+// global components
+Vue.component("ConfirmationDialog", ConfirmationDialog)
+
 new Vue({
     render: h => h(App),
-}).$mount('#app')
+})
+.$mount('#app')
