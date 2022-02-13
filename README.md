@@ -17,7 +17,12 @@ Desenvolvido usando .NET Core 5 e FluentNHibernate
 
 ## App
 
-Desenvolvido usando _Vue_ 2.6^ com dependencia do _bootstrap-vue_ 
+Desenvolvido usando _Vue_ 2.6^ com dependencia do *Vue Cli* e _bootstrap-vue_ 
+
+### Instalar Vue Cli para comandos de build e serve
+```
+npm install -g @vue/cli
+```
 
 ### Para instalar todas as dependencias 
 ```
@@ -34,7 +39,7 @@ npm run serve
 npm run build
 ```
 
-### Configura rota da API
+### Configurar rotas da API
 No arquivo `axios.bootstrap.js` é configurado qual a rota ( _host_ ) principal da API, (ela deve se manter a mesma se o _launchSettins.json_ em `Api/Properties`)
 
 
